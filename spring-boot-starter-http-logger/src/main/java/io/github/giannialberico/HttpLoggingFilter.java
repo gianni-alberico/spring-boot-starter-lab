@@ -31,7 +31,9 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
         handleCorrelationId(request, response);
 
-        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, 1024);
+        // This is to avoid integer overflow
+        int limit = (int) Math.min(httpLoggerProperties.maxBodySize().toBytes(), Integer.MAX_VALUE);
+        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, limit);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
 
         // Lighter log without body
