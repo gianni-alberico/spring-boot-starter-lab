@@ -36,9 +36,6 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, limit);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
 
-        // Lighter log without body
-        logRequest("INCOMING HTTP REQUEST", request, null, startTime);
-
         try {
             filterChain.doFilter(wrappedRequest, wrappedResponse);
         } finally {
@@ -47,7 +44,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
             String requestBody = getBody(wrappedRequest.getContentAsByteArray(), wrappedRequest.getCharacterEncoding());
             String responseBody = getBody(wrappedResponse.getContentAsByteArray(), wrappedResponse.getCharacterEncoding());
 
-            logRequest("HTTP REQUEST", wrappedRequest, requestBody, startTime);
+            logRequest(wrappedRequest, requestBody, startTime);
             logResponse(wrappedResponse, responseBody, startTime, endTime);
 
             wrappedResponse.copyBodyToResponse();
@@ -62,9 +59,9 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         response.setHeader(CorrelationIdUtils.CORRELATION_ID_HEADER, correlationId);
     }
 
-    private void logRequest(String title, HttpServletRequest request, String requestBody, long startTime) {
+    private void logRequest(HttpServletRequest request, String requestBody, long startTime) {
         HttpLogFormatter.Builder builder = new HttpLogFormatter.Builder()
-                .title(title)
+                .title("HTTP REQUEST")
                 .date(new Date(startTime))
                 .method(request.getMethod())
                 .uri(getFormattedURI(request))
