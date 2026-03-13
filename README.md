@@ -44,6 +44,7 @@ http.logger.include-response-body=true
 - `http.logger.enabled` : active/désactive les logs HTTP
 - `http.logger.include-request-body` : inclut le corps de la requête dans les logs
 - `http.logger.include-response-body` : inclut le corps de la réponse dans les logs
+- `http.logger.max-body-size` : limite la taille des bodies dans les logs (ex: `1KB`, `2KB`)
 
 ## Application de demonstration
 
