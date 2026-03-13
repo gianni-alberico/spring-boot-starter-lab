@@ -1,8 +1,11 @@
 package io.github.giannialberico;
 
+import java.util.Date;
+
 public class HttpLogFormatter {
     private String title;
     private String id;
+    private Date date;
     private String method;
     private String uri;
     private String headers;
@@ -14,6 +17,7 @@ public class HttpLogFormatter {
     public HttpLogFormatter(Builder builder) {
         this.title = builder.title;
         this.id = builder.id;
+        this.date = builder.date;
         this.method = builder.method;
         this.uri = builder.uri;
         this.headers = builder.headers;
@@ -26,6 +30,7 @@ public class HttpLogFormatter {
     public static class Builder {
         private String title;
         private String id;
+        private Date date;
         private String method;
         private String uri;
         private String headers;
@@ -41,6 +46,11 @@ public class HttpLogFormatter {
 
         public Builder id(String id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder date(Date date) {
+            this.date = date;
             return this;
         }
 
@@ -92,6 +102,8 @@ public class HttpLogFormatter {
         this.id = id;
     }
 
+    public void setDate(Date date) { this.date = date; }
+
     public void setMethod(String method) {
         this.method = method;
     }
@@ -123,15 +135,16 @@ public class HttpLogFormatter {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (title != null)              sb.append("\n---------- ").append(title)  .append(" ----------\n");
-        if (id != null)                 sb.append("ID       : ").append(id)             .append("\n");
-        if (method != null)             sb.append("Method   : ").append(method)         .append("\n");
-        if (uri != null)                sb.append("URI      : ").append(uri)            .append("\n");
-        if (status != null)             sb.append("Status   : ").append(status)         .append("\n");
-        if (body != null)               sb.append("Body     : ").append(body)           .append("\n");
-        if (headers != null)            sb.append("Headers  : ").append(headers)        .append("\n");
-        if (size != null)               sb.append("Size     : ").append(size)           .append("\n");
-        if (durationInMilli != null)    sb.append("Duration : ").append(durationInMilli).append(" ms\n");
+        if (title != null)           sb.append("\n---------- ").append(title)          .append(" ----------\n");
+        if (id != null)              sb.append("ID       : ")  .append(id)             .append("\n");
+        if (date != null)            sb.append("Date     : ")  .append(date.toString()).append("\n");
+        if (method != null)          sb.append("Method   : ")  .append(method)         .append("\n");
+        if (uri != null)             sb.append("URI      : ")  .append(uri)            .append("\n");
+        if (status != null)          sb.append("Status   : ")  .append(status)         .append("\n");
+        if (body != null)            sb.append("Body     : ")  .append(body)           .append("\n");
+        if (headers != null)         sb.append("Headers  : ")  .append(headers)        .append("\n");
+        if (size != null)            sb.append("Size     : ")  .append(size)           .append("\n");
+        if (durationInMilli != null) sb.append("Duration : ")  .append(durationInMilli).append(" ms\n");
 
         return sb.toString();
     }

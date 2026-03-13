@@ -12,6 +12,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.List;
 
 public class HttpLoggingFilter extends OncePerRequestFilter {
@@ -31,41 +32,46 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, 1024);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
 
+        // Lighter log without body
+        logRequest("INCOMING HTTP REQUEST", request, null, startTime);
+
         try {
             filterChain.doFilter(wrappedRequest, wrappedResponse);
         } finally {
-            long duration = System.currentTimeMillis() - startTime;
+            long endTime = System.currentTimeMillis();
 
             String requestBody = getBody(wrappedRequest.getContentAsByteArray(), wrappedRequest.getCharacterEncoding());
             String responseBody = getBody(wrappedResponse.getContentAsByteArray(), wrappedResponse.getCharacterEncoding());
 
-            logRequest(wrappedRequest, requestBody);
-            logResponse(wrappedResponse, responseBody, duration);
+            logRequest("HTTP REQUEST", wrappedRequest, requestBody, startTime);
+            logResponse(wrappedResponse, responseBody, startTime, endTime);
 
             wrappedResponse.copyBodyToResponse();
         }
     }
 
-    private void logRequest(HttpServletRequest request, String requestBody) {
+    private void logRequest(String title, HttpServletRequest request, String requestBody, long startTime) {
         HttpLogFormatter.Builder builder = new HttpLogFormatter.Builder()
-                .title("HTTP REQUEST")
+                .title(title)
+                .date(new Date(startTime))
                 .method(request.getMethod())
                 .uri(getFormattedURI(request))
                 .headers(getRequestHeaders(request));
 
-        if (httpLoggerProperties.includeRequestBody()) {
+        if (httpLoggerProperties.includeRequestBody() && requestBody != null) {
             builder.body(requestBody);
         }
 
         log.info(builder.build().toString());
     }
 
-    private void logResponse(ContentCachingResponseWrapper response, String responseBody, long duration) {
+    private void logResponse(ContentCachingResponseWrapper response, String responseBody, long startTime, long endTime) {
         HttpLogFormatter.Builder builder = new HttpLogFormatter.Builder()
                 .title("HTTP RESPONSE")
+                .date(new Date(endTime))
                 .status(response.getStatus())
                 .headers(getResponseHeaders(response))
-                .durationInMilli(duration)
+                .durationInMilli(endTime - startTime)
                 .size(formatSize(response.getContentAsByteArray().length));
 
         if (httpLoggerProperties.includeResponseBody()) {
