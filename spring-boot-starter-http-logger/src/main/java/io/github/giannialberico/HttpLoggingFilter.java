@@ -29,6 +29,8 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         long startTime = System.currentTimeMillis();
 
+        handleCorrelationId(request, response);
+
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, 1024);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
 
@@ -47,7 +49,15 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
             logResponse(wrappedResponse, responseBody, startTime, endTime);
 
             wrappedResponse.copyBodyToResponse();
+
+            CorrelationIdUtils.clear();
         }
+    }
+
+    private void handleCorrelationId(HttpServletRequest request, HttpServletResponse response) {
+        String correlationId = CorrelationIdUtils.getOrGenerate(request);
+        CorrelationIdUtils.addToMdc(correlationId);
+        response.setHeader(CorrelationIdUtils.CORRELATION_ID_HEADER, correlationId);
     }
 
     private void logRequest(String title, HttpServletRequest request, String requestBody, long startTime) {

@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class HttpLogFormatter {
     private String title;
-    private String id;
     private Date date;
     private String method;
     private String uri;
@@ -16,7 +15,6 @@ public class HttpLogFormatter {
 
     public HttpLogFormatter(Builder builder) {
         this.title = builder.title;
-        this.id = builder.id;
         this.date = builder.date;
         this.method = builder.method;
         this.uri = builder.uri;
@@ -29,7 +27,6 @@ public class HttpLogFormatter {
 
     public static class Builder {
         private String title;
-        private String id;
         private Date date;
         private String method;
         private String uri;
@@ -41,11 +38,6 @@ public class HttpLogFormatter {
 
         public Builder title(String title) {
             this.title = title;
-            return this;
-        }
-
-        public Builder id(String id) {
-            this.id = id;
             return this;
         }
 
@@ -98,10 +90,6 @@ public class HttpLogFormatter {
         this.title = title;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setDate(Date date) { this.date = date; }
 
     public void setMethod(String method) {
@@ -136,7 +124,6 @@ public class HttpLogFormatter {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (title != null)           sb.append("\n---------- ").append(title)          .append(" ----------\n");
-        if (id != null)              sb.append("ID       : ")  .append(id)             .append("\n");
         if (date != null)            sb.append("Date     : ")  .append(date.toString()).append("\n");
         if (method != null)          sb.append("Method   : ")  .append(method)         .append("\n");
         if (uri != null)             sb.append("URI      : ")  .append(uri)            .append("\n");
