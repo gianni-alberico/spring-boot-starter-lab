@@ -19,4 +19,10 @@ public class LabController {
     public String echo(@RequestBody String payload) {
         return payload;
     }
+
+    @GetMapping("/slow")
+    public String slow() throws InterruptedException {
+        Thread.sleep(3000);
+        return "Hello World! (processed with a 3s delay)";
+    }
 }
