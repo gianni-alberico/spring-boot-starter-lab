@@ -3,15 +3,15 @@ package io.github.giannialberico;
 import java.util.Date;
 
 public class HttpLogFormatter {
-    private String title;
-    private Date date;
-    private String method;
-    private String uri;
-    private String headers;
-    private String body;
-    private Integer status;
-    private String size;
-    private Long durationInMilli;
+    private final String title;
+    private final Date date;
+    private final String method;
+    private final String uri;
+    private final String headers;
+    private final String body;
+    private final Integer status;
+    private final String size;
+    private final Long durationInMilli;
 
     public HttpLogFormatter(Builder builder) {
         this.title = builder.title;
@@ -84,40 +84,6 @@ public class HttpLogFormatter {
         public HttpLogFormatter build() {
             return new HttpLogFormatter(this);
         }
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDate(Date date) { this.date = date; }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    public void setHeaders(String headers) {
-        this.headers = headers;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public void setDurationInMilli(Long durationInMilli) {
-        this.durationInMilli = durationInMilli;
     }
 
     @Override
